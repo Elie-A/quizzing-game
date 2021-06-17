@@ -1,10 +1,11 @@
 package controller.parser;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,13 +20,13 @@ import controller.miscutilities.MiscUtilities;
 import model.Choice;
 import model.Question;
 
-public class Parser implements IParser{
+public class Parser implements IParser {
 
 	@Override
 	public List<Question> getQuestionsFromXML(String filePath) throws Exception {
 		List<Question> list = new ArrayList<Question>();
-		Choice[] choices = new Choice[]{};
-		
+		Choice[] choices = new Choice[] {};
+
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -62,10 +63,45 @@ public class Parser implements IParser{
 	}
 
 	@Override
-	public int totalQuestionFromXml(List<Question> listOfQuestions) throws Exception {
+	public List<Question> getQuestionsFromTXT(String filePath) throws Exception {
+		BufferedReader bufferedReader = null;
+		List<Question> list = new ArrayList<Question>();
+		Choice[] choices = new Choice[] {};
+		String line = "";
+
+		Question question = null;
+
+		bufferedReader = new BufferedReader(new FileReader(filePath));
+
+		while ((line = bufferedReader.readLine()) != null) {
+			if (line.startsWith("Question ")) {
+				question = new Question();
+				question.setId(line.split(":")[0].substring(line.split(":")[0].indexOf(" ") + 1));
+				question.setValue(line.split(":")[1]);
+			} else if (line.startsWith("Choices: ")) {
+				String[] choiceFull = line.split(", ");
+				for(int i = 0; i <= choiceFull.length - 1; i++) {
+					Choice choice = new Choice();
+					choice.setId(choiceFull[i].split("-")[0].replace("Choices: ", ""));
+					choice.setValue(choiceFull[i].split("-")[1]);
+					choices = MiscUtilities.addToChoiceArray(choices.length, choices, choice);
+				}
+			}else if(line.startsWith("Correct answer: ")) {
+				question.setAnswer(line.split(": ")[1]);
+				question.setChoices(choices);
+				choices = MiscUtilities.clearChoiceArray(choices);
+				list.add(question);
+			}
+		}
+		bufferedReader.close();
+		return list;
+	}
+
+	@Override
+	public int getTotalQuestions(List<Question> listOfQuestions) throws Exception {
 		return listOfQuestions.size();
 	}
-	
+
 	@Override
 	public void saveToFile(String filePath, String info) throws Exception {
 		FileWriter fileWriter = new FileWriter(new File(filePath + ".txt"));

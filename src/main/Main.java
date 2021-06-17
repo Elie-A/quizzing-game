@@ -35,8 +35,9 @@ public class Main {
 
 		Parser parser = new Parser();
 
-		listOfQuestions = parser.getQuestionsFromXML(StaticVariables.xmlPath);
-		totalNumberOfQuestions = parser.totalQuestionFromXml(listOfQuestions);
+//		listOfQuestions = parser.getQuestionsFromXML(StaticVariables.xmlPath);
+		listOfQuestions = parser.getQuestionsFromTXT(StaticVariables.txtPath);
+		totalNumberOfQuestions = parser.getTotalQuestions(listOfQuestions);
 
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -73,7 +74,7 @@ public class Main {
 				System.out.println("Answer: ");
 				answer = bufferedReader.readLine().trim();
 				if (answer.equalsIgnoreCase(correctAnswer)) {
-					score = +10;
+					score += 10;
 					System.out.println("Correct!\t\t\t" + "Score: " + score);
 					System.out.println();
 					do {
@@ -82,7 +83,7 @@ public class Main {
 					} while (!moreQuestion.equalsIgnoreCase("y") && !moreQuestion.equalsIgnoreCase("n"));
 					System.out.println();
 				} else {
-					score = -10;
+					score -= 10;
 					System.out.println("Incorrect!\t\t\t" + "Score: " + score);
 					System.out.println();
 					do {
