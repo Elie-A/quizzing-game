@@ -44,12 +44,12 @@ public class Main {
 		do {
 			System.out.println("Enter your first name: ");
 			firstName = bufferedReader.readLine().trim();
-		} while (firstName.length() <= 0 || lastName.length() <= 0);
+		} while (firstName.length() <= 0);
 
 		do {
 			System.out.println("Enter your last name: ");
 			lastName = bufferedReader.readLine().trim();
-		} while (firstName.length() <= 0 || lastName.length() <= 0);
+		} while (lastName.length() <= 0);
 
 		System.out.println("============================================================");
 
