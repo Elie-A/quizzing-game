@@ -10,6 +10,7 @@ import java.util.List;
 import controller.parser.Parser;
 import model.Choice;
 import model.Question;
+import staticVariables.DATA_SOURCE;
 import staticVariables.StaticVariables;
 
 public class Main {
@@ -17,6 +18,7 @@ public class Main {
 	public static void main(String args[]) throws Exception {
 		String firstName = "";
 		String lastName = "";
+		String dataSource = "";
 
 		String datePattern = "YYYY-MM-dd hh:mm:ss";
 
@@ -35,13 +37,32 @@ public class Main {
 
 		Parser parser = new Parser();
 
-//		listOfQuestions = parser.getQuestionsFromXML(StaticVariables.xmlPath);
-		listOfQuestions = parser.getQuestionsFromTXT(StaticVariables.txtPath);
-		totalNumberOfQuestions = parser.getTotalQuestions(listOfQuestions);
-
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
-		System.out.println("Hello & Welcome to the java quiz game!");
+		do {
+			System.out.println("Select a data source");
+			DATA_SOURCE.printEnum();
+			dataSource = bufferedReader.readLine().trim();
+		} while (!DATA_SOURCE.validateIfInEnum(dataSource));
+
+		switch (dataSource) {
+		case "1":
+			listOfQuestions = parser.getQuestionsFromTXT(StaticVariables.txtPath);
+			totalNumberOfQuestions = parser.getTotalQuestions(listOfQuestions);
+			break;
+		case "2":
+			listOfQuestions = parser.getQuestionsFromXML(StaticVariables.xmlPath);
+			totalNumberOfQuestions = parser.getTotalQuestions(listOfQuestions);
+			break;
+		default:
+			System.err.println("Invalid data source type!");
+			System.err.println("Terminating application...");
+			System.err.println("Application terminated!");
+			System.exit(0);
+			break;
+		}
+
+		System.out.println("\nHello & Welcome to the java quiz game!");
 		do {
 			System.out.println("Enter your first name: ");
 			firstName = bufferedReader.readLine().trim();
@@ -55,8 +76,9 @@ public class Main {
 		System.out.println("============================================================");
 
 		do {
-			System.out.println("Enter desired number of questions: ");
+			System.out.println("\nEnter desired number of questions: ");
 			desiredNumberOfQuestions = Integer.parseInt(bufferedReader.readLine().trim());
+			System.out.println("\nMaximum number of questions is: " + totalNumberOfQuestions);
 		} while (!String.valueOf(desiredNumberOfQuestions).matches("\\d") || desiredNumberOfQuestions <= 0
 				|| desiredNumberOfQuestions > totalNumberOfQuestions);
 		System.out.println("============================================================");
